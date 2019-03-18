@@ -1,0 +1,94 @@
+<html>
+<head>
+    <title>DynamoDB JSON <-> JSON</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.422.0/aws-sdk.min.js"
+            integrity="sha256-Da7C+cls1rahhFZCYIqCtpuiTu3Q3OYo2z8H7i394Ss=" crossorigin="anonymous"></script>
+    <script>
+        function unmarshall() {
+            try {
+                var dynamodbJson = JSON.parse(document.getElementById("dynamodb").value);
+                document.getElementById("json").value = JSON.stringify(AWS.DynamoDB.Converter.unmarshall(dynamodbJson), null, 4);
+            } catch (e) {
+                alert("Couldn't unmarshall that. " + e)
+            }
+        }
+
+        function marshall() {
+            try {
+                var json = JSON.parse(document.getElementById("json").value);
+                document.getElementById("dynamodb").value = JSON.stringify(AWS.DynamoDB.Converter.marshall(json), null, 4);
+            } catch {
+                alert("Couldn't marshall that. " + e)
+            }
+        }
+    </script>
+    <style>
+        .row {
+            display: flex;
+            flex: 1;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 500px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Un/marshall Dynamodb JSON</h1>
+<div class="row">
+    <div class="container">
+        <textarea id="dynamodb">{
+    "string": {
+        "S": "foo"
+    },
+    "list": {
+        "L": [
+            {
+                "S": "fizz"
+            },
+            {
+                "S": "buzz"
+            },
+            {
+                "S": "pop"
+            }
+        ]
+    },
+    "map": {
+        "M": {
+            "nestedMap": {
+                "M": {
+                    "key": {
+                        "S": "value"
+                    }
+                }
+            }
+        }
+    },
+    "number": {
+        "N": 123
+    },
+    "nullValue": {
+        "NULL": true
+    },
+    "boolValue": {
+        "BOOL": true
+    }
+}</textarea>
+        <button type="button" onclick="unmarshall()">Unmarshall to JSON</button>
+    </div>
+    <div class="container">
+        <textarea id="json"></textarea>
+        <button type="button" onclick="marshall()">Marshall to Dynamodb JSON</button>
+    </div>
+</div>
+</body>
+</html>
